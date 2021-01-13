@@ -45,30 +45,28 @@ public class SlackService {
 
     @Autowired
     private SlackCommandExecutable teamScheduleService;
-
-    @Value("${slack-app-id}")
-    private String appId;
-
-    @Value("${slack-client-id}")
-    private String clientId;
-
-    @Value("${slack-client-secret}")
-    private String clientSecret;
-
-    @Value("${slack-signing-secret}")
-    private String signingSecret;
-
-    @Value("${slack-verification-token}")
-    private String verificationToken;
-
-    @Value("${slack-oauth-token}")
+   
+ 
     private String oauthToken;
-
-    @Value("${slack-webhook-url}")
     private String webhookUrl;
 
     @Value("${slack-post-message-url}")
     private String postMessageUrl;
+
+    public SlackService(){
+        // oauth token from env
+        // webhook url from env
+        ProcessBuilder pb = new ProcessBuilder();
+        Map<String, String> env = pb.environment();
+        oauthToken = env.get("OAUTH_TOKEN");
+        webhookUrl = env.get("WEBHOOK_URL");
+        if(oauthToken == null || oauthToken.equals("")){
+            logger.warn("empty oauth token. it will not working with slack");
+        }
+        if(webhookUrl == null || webhookUrl.equals("")){
+            logger.warn("empty oauth token. it can`t send message to slack channel");
+        }
+    }
     
     // command from slack event api
     public String handleEvent(String message){
@@ -118,7 +116,7 @@ public class SlackService {
         headers.set("Authorization", "Bearer " + oauthToken);
 
 
-        // TODO: Slack Message Builder
+        // TODO: need a Slack Message Builder
         Map<String, Object> jsonBody = new HashMap<>();
         List<Object> attachments = new ArrayList<>();
         Map<String, Object> attachment = new HashMap<>();
