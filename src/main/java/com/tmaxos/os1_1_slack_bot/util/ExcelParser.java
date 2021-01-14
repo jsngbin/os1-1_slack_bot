@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,8 +22,6 @@ public class ExcelParser {
 
     private Logger logger = LoggerFactory.getLogger(ExcelParser.class);
     private XSSFWorkbook workbook = null;
-
-    @Value("${excel-path}")
     private String path;
 
     public enum RowIndex {
@@ -53,7 +52,17 @@ public class ExcelParser {
         }
     };
 
+    public ExcelParser(){
+        ProcessBuilder pb = new ProcessBuilder();
+        Map<String, String> env = pb.environment();
+        path = env.get("EXCEL_PATH");
+        if(path == null || path.isEmpty()){
+            logger.error("empty excel path.");
+        }
+    }
+
     public void loadExcel(boolean force) {
+        if(path == null || path.isEmpty()) return;
 
         if (workbook == null || force) {
             try (FileInputStream stream = new FileInputStream(path)) {
@@ -68,7 +77,7 @@ public class ExcelParser {
         if (workbook == null)
             return "메뉴 정보가 없어요";
 
-        Sheet sheet = workbook.getSheetAt(0);        
+        Sheet sheet = workbook.getSheetAt(0);
         List<CellRangeAddress> mergedRange = new ArrayList<>();
 
         for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
@@ -90,7 +99,7 @@ public class ExcelParser {
             else
                 return -1;
         });
-        
+
 
         int start = 0;
         int end = 0;
@@ -107,17 +116,17 @@ public class ExcelParser {
         }
 
         StringBuilder builder = new StringBuilder();
-        Calendar cal = Calendar.getInstance();        
-        int todayIndex = cal.get(Calendar.DAY_OF_WEEK); // == column index.        
+        Calendar cal = Calendar.getInstance();
+        int todayIndex = cal.get(Calendar.DAY_OF_WEEK); // == column index.
 
         builder.append(title + "\n");
         for(int i = start, cnt = 0; i < end && cnt < 2; i++, cnt++){
             CellRangeAddress range = mergedRange.get(i);
             for(int j = range.getFirstRow(); j <= range.getLastRow(); j++){
                 Row row = sheet.getRow(j);
-                Cell cell = row.getCell(todayIndex);                
+                Cell cell = row.getCell(todayIndex);
                 builder.append(cell.getStringCellValue() + "\t");
-            }            
+            }
             builder.append("\n\n");
         }
         return builder.toString();

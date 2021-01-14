@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Os11SlackBotApplication {
 
 	public static void main(String[] args) {
-	
+
 		SpringApplication.run(Os11SlackBotApplication.class, args);
 	}
 
