@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,14 +36,14 @@ public class SlackService {
     private static final String POST_FIELD_TEXT = EVENTAPI_FIELD_MSG;    
 
 
-    private Logger logger = LoggerFactory.getLogger(SlackService.class);
+    private final Logger logger = LoggerFactory.getLogger(SlackService.class);
 
     @Autowired
     private SlackCommandExecutable bobMenuService;
 
     @Autowired
     private SlackCommandExecutable teamScheduleService;
-   
+
  
     private String oauthToken;
     private String webhookUrl;
@@ -77,7 +75,12 @@ public class SlackService {
             
             Map<String, Object> jsonData = mapper.readValue(message, Map.class); // FIXME: TypeReference ?..            
             String commandType = (String)jsonData.get(EVENTAPI_FIELD_TYPE);
-            
+
+            if(commandType == null){
+                logger.error("invalid slack message format. ignore it");
+                return "";
+            }
+
             if (commandType.equals(EVENTAPI_FIELD_VERIFICATION_VALUE)) {
                 return "{\"challenge\" : \"" + jsonData.get("challenge") + "\"}";
             } else if(commandType.equals(EVENTAPI_FIELD_EVENTCALLBACK_VALUE)) {
@@ -91,6 +94,7 @@ public class SlackService {
 
                 if(messageType.equals(EVENTAPI_FIELD_APPMENTION_VALUE)){
                     // post help message
+                    // TODO
                 }
                 else{                 
                     // if we need reply for message, handle it!
@@ -108,7 +112,6 @@ public class SlackService {
     }
 
     private void postMessageToChannel(String title, String text, String channelId){
-        
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();       
 
@@ -135,10 +138,9 @@ public class SlackService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        
-        
+
         HttpEntity<String> entity = new HttpEntity<>(asJsonStr, headers);
-        rest.postForEntity(postMessageUrl, entity, String.class);        
+        rest.postForEntity(postMessageUrl, entity, String.class);
     }
     private void handleSlackMessage(String command, String channelId){
         logger.info("handle slack message");        
@@ -149,5 +151,4 @@ public class SlackService {
                 channelId);            
         }
     }    
-
 }
