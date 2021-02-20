@@ -44,28 +44,16 @@ public class SlackService {
     @Autowired
     private SlackCommandExecutable teamScheduleService;
 
- 
+
+    @Value("${slack-oauth-token}")
     private String oauthToken;
+
+    @Value("${slack-post-message-url}")
     private String webhookUrl;
 
     @Value("${slack-post-message-url}")
     private String postMessageUrl;
 
-    public SlackService(){
-        // oauth token from env
-        // webhook url from env
-        ProcessBuilder pb = new ProcessBuilder();
-        Map<String, String> env = pb.environment();
-        oauthToken = env.get("OAUTH_TOKEN");
-        webhookUrl = env.get("WEBHOOK_URL");
-        if(oauthToken == null || oauthToken.equals("")){
-            logger.warn("empty oauth token. it will not working with slack");
-        }
-        if(webhookUrl == null || webhookUrl.equals("")){
-            logger.warn("empty oauth token. it can`t send message to slack channel");
-        }
-    }
-    
     // command from slack event api
     public String handleEvent(String message){
         try{
@@ -89,8 +77,6 @@ public class SlackService {
                 String messageType = eventField.get(EVENTAPI_FIELD_MSGTYPE);
                 String text = eventField.get(EVENTAPI_FIELD_MSG);
                 String channelId = eventField.get(EVENTAPI_FIELD_CHANNELID);
-                logger.info(text);
-                logger.info(channelId);
 
                 if(messageType.equals(EVENTAPI_FIELD_APPMENTION_VALUE)){
                     // post help message
