@@ -109,9 +109,14 @@ public class BobMenuService implements SlackCommandExecutable{
         builder.append(dto.getLunchOrDinner());
         builder.append(">*\n");
 
-        for(String menu: dto.getMenus()) {
-            builder.append(menu);
-            builder.append("\t");
+        if(dto.getMenus() == null || dto.getMenus().isEmpty()){
+            builder.append("메뉴 정보가 없습니다.");
+        }
+        else{
+            for(String menu: dto.getMenus()) {
+                builder.append(menu);
+                builder.append("\t");
+            }
         }
         builder.append("\n");
         return builder.toString();
