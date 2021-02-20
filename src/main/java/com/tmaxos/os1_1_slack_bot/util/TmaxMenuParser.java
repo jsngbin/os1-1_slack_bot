@@ -96,8 +96,9 @@ public class TmaxMenuParser {
             for(int j = cell.getFirstRow(); j <= cell.getLastRow(); j++){
                 Row row = parser.getRow(j, 0);
                 Cell contentCell = row.getCell(day.getValue());
+                if(contentCell == null) continue;
                 String value = contentCell.getStringCellValue();
-                if(!value.isEmpty())
+                if(value != null && !value.isEmpty())
                     menuContents.add(value);
             }
         }
