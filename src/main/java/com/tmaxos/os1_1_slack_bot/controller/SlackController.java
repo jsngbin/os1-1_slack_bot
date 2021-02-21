@@ -1,6 +1,8 @@
 package com.tmaxos.os1_1_slack_bot.controller;
 
 import com.tmaxos.os1_1_slack_bot.dto.MenuDTO;
+import com.tmaxos.os1_1_slack_bot.repository.AccountEntity;
+import com.tmaxos.os1_1_slack_bot.repository.AccountRepository;
 import com.tmaxos.os1_1_slack_bot.service.BobMenuService;
 import com.tmaxos.os1_1_slack_bot.service.SlackService;
 
@@ -27,12 +29,8 @@ public class SlackController {
     }
 
     @GetMapping(path="/api/menu")
-    public MenuDTO getMenu(@RequestParam("type") String lunchOrDinner){
+    public MenuDTO getMenu(@RequestParam(value = "type", required = false) String lunchOrDinner){
         return bobMenuService.getTodayMenu(lunchOrDinner);
     }
 
-    @RequestMapping("/")
-    public String handleHello(){
-        return "Hello OS1-1 Slack Bot";
-    }
 }
