@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 public class MenuDTO {
     String lunchOrDinner;
-    List<String> Menus;
+    List<List<String>> Menus;
 }

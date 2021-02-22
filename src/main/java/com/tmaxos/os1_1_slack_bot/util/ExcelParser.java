@@ -67,16 +67,17 @@ public class ExcelParser {
         }
         else if(force){
             try {
-                if(workbook != null)
-                    workbook.close();
+                workbook.close();
                 allocationWorkbook(excelPath);
             } catch (IOException e) {
                 logger.error(e.getMessage());
             }
         }
+        /*
         else{
             logger.warn("already opened");
         }
+        */
     }
 
     public Row getRow(int rowIndex, int sheetIndex){
