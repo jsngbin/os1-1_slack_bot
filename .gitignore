@@ -59,6 +59,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### Spring Properties ###
-application.properties
