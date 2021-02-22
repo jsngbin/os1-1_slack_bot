@@ -71,9 +71,9 @@ public class TmaxMenuParser {
         load(true);
     }
 
-    public List<String> getMenuContents(Menu menu, Day day) {
+    public List<List<String>> getMenuContents(Menu menu, Day day) {
 
-        List<String> menuContents = new ArrayList<>();
+        List<List<String>> menuContents = new ArrayList<>();
         List<CellRangeAddress> menuCells = getMenuCell();
 
         if(menuCells == null || menuCells.isEmpty()) return null;
@@ -92,6 +92,8 @@ public class TmaxMenuParser {
 
         // cnt < 2 -> main menu. without take-out menu.
         for(int i = start, cnt = 0; i < end && cnt < 2; i++, cnt++){
+            List<String> menuList = new ArrayList<>();
+
             CellRangeAddress cell = menuCells.get(i);
             for(int j = cell.getFirstRow(); j <= cell.getLastRow(); j++){
                 Row row = parser.getRow(j, 0);
@@ -99,8 +101,9 @@ public class TmaxMenuParser {
                 if(contentCell == null) continue;
                 String value = contentCell.getStringCellValue();
                 if(value != null && !value.isEmpty())
-                    menuContents.add(value);
+                    menuList.add(value);
             }
+            menuContents.add(menuList);
         }
 
         return menuContents;

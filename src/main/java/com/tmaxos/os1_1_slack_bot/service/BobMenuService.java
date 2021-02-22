@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BobMenuService implements SlackCommandExecutable{
 
     private final Logger logger = LoggerFactory.getLogger(BobMenuService.class);
- 
+
     private List<String> messageCommands;
 
     static public String LUNCH = "lunch";
@@ -27,23 +27,23 @@ public class BobMenuService implements SlackCommandExecutable{
 
     public BobMenuService(){
         messageCommands = new ArrayList<>();
-        
+
         messageCommands.add("저녁 알려줘");
         messageCommands.add("점심 알려줘");
         messageCommands.add("밥 알려줘");
     }
 
     @Override
-    public boolean matchCommand(String command) {        
+    public boolean matchCommand(String command) {
 
-        for(String message : messageCommands){            
+        for(String message : messageCommands){
             if(message.equals(command)) return true;
 
         }
         return false;
     }
     @Override
-    public String getCommandReplyTitle(String command) {        
+    public String getCommandReplyTitle(String command) {
         return "메뉴를 알려드립니다.";
     }
     @Override
@@ -61,7 +61,7 @@ public class BobMenuService implements SlackCommandExecutable{
         }
         else{
             replyMessage.append("메뉴정보가 없거나 잘못된 입력입니다.");
-        }        
+        }
         return replyMessage.toString();
     }
 
@@ -84,7 +84,7 @@ public class BobMenuService implements SlackCommandExecutable{
 
         TmaxMenuParser.Day dayForParser = TmaxMenuParser.Day.fromInt(day);
         parser.load(false); // FIXME. i don't want to write this code here.
-        List<String> menuContents = parser.getMenuContents(menu, dayForParser);
+        List<List<String>> menuContents = parser.getMenuContents(menu, dayForParser);
 
         dto.setMenus(menuContents);
         return dto;
@@ -113,9 +113,9 @@ public class BobMenuService implements SlackCommandExecutable{
             builder.append("메뉴 정보가 없습니다.");
         }
         else{
-            for(String menu: dto.getMenus()) {
+            for(List<String> menu: dto.getMenus()) {
                 builder.append(menu);
-                builder.append("\t");
+                builder.append("\n");
             }
         }
         builder.append("\n");
