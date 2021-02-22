@@ -33,7 +33,7 @@ public class SlackService {
     private static final String EVENTAPI_FIELD_BOTID = "bot_id";
     private static final String EVENTAPI_FIELD_APPMENTION_VALUE = "app_mention";
     private static final String POST_FIELD_CHANNELID = EVENTAPI_FIELD_CHANNELID;
-    private static final String POST_FIELD_TEXT = EVENTAPI_FIELD_MSG;    
+    private static final String POST_FIELD_TEXT = EVENTAPI_FIELD_MSG;
 
 
     private final Logger logger = LoggerFactory.getLogger(SlackService.class);
@@ -60,8 +60,8 @@ public class SlackService {
             logger.info("event message got!");
             logger.info(message);
             ObjectMapper mapper = new ObjectMapper();
-            
-            Map<String, Object> jsonData = mapper.readValue(message, Map.class); // FIXME: TypeReference ?..            
+
+            Map<String, Object> jsonData = mapper.readValue(message, Map.class); // FIXME: TypeReference ?..
             String commandType = (String)jsonData.get(EVENTAPI_FIELD_TYPE);
 
             if(commandType == null){
@@ -72,8 +72,8 @@ public class SlackService {
             if (commandType.equals(EVENTAPI_FIELD_VERIFICATION_VALUE)) {
                 return "{\"challenge\" : \"" + jsonData.get("challenge") + "\"}";
             } else if(commandType.equals(EVENTAPI_FIELD_EVENTCALLBACK_VALUE)) {
-                               
-                LinkedHashMap<String, String> eventField = (LinkedHashMap<String, String>)jsonData.get(EVENTAPI_FIELD_EVENT);                
+
+                LinkedHashMap<String, String> eventField = (LinkedHashMap<String, String>)jsonData.get(EVENTAPI_FIELD_EVENT);
                 String messageType = eventField.get(EVENTAPI_FIELD_MSGTYPE);
                 String text = eventField.get(EVENTAPI_FIELD_MSG);
                 String channelId = eventField.get(EVENTAPI_FIELD_CHANNELID);
@@ -82,12 +82,12 @@ public class SlackService {
                     // post help message
                     // TODO
                 }
-                else{                 
+                else{
                     // if we need reply for message, handle it!
                     if(eventField.get(EVENTAPI_FIELD_BOTID) == null)
-                        handleSlackMessage(text, channelId);   
+                        handleSlackMessage(text, channelId);
                     }
-                }            
+                }
         }
         catch(JsonProcessingException ex){
             logger.error(ex.getMessage());
@@ -98,8 +98,9 @@ public class SlackService {
     }
 
     private void postMessageToChannel(String title, String text, String channelId){
+
         RestTemplate rest = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();       
+        HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + oauthToken);
@@ -129,12 +130,12 @@ public class SlackService {
         rest.postForEntity(postMessageUrl, entity, String.class);
     }
     private void handleSlackMessage(String command, String channelId){
-        logger.info("handle slack message");        
+        logger.info("handle slack message");
         if(bobMenuService.matchCommand(command)){
             postMessageToChannel(
                 bobMenuService.getCommandReplyTitle(command),
                 bobMenuService.getCommandReplyMessage(command),
-                channelId);            
+                channelId);
         }
-    }    
+    }
 }

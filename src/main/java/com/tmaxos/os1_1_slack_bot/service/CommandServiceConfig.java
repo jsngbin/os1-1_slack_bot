@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CommandServiceConfig {
-    
+
     @Bean
     public BobMenuService bobMenuService(){
         return new BobMenuService();

@@ -6,8 +6,8 @@ import com.tmaxos.os1_1_slack_bot.template.SlackCommandExecutable;
 import org.springframework.stereotype.Component;
 
 public class TeamScheduleService implements SlackCommandExecutable {
- 
-    
+
+
     private List<String> commands;
 
     @Override
@@ -19,12 +19,12 @@ public class TeamScheduleService implements SlackCommandExecutable {
     }
 
     @Override
-    public String getCommandReplyMessage(String command) {        
+    public String getCommandReplyMessage(String command) {
         return null;
     }
 
     @Override
-    public String getCommandReplyTitle(String command) {        
+    public String getCommandReplyTitle(String command) {
         return null;
     }
 }

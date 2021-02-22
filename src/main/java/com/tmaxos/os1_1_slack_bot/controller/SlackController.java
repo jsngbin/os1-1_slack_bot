@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 @RestController
 public class SlackController {
- 
+
     private Logger logger = LoggerFactory.getLogger(SlackController.class);
 
     @Autowired
