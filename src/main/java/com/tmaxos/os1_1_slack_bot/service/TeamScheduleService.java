@@ -1,9 +1,7 @@
 package com.tmaxos.os1_1_slack_bot.service;
 
 import java.util.List;
-
 import com.tmaxos.os1_1_slack_bot.template.SlackCommandExecutable;
-import org.springframework.stereotype.Component;
 
 public class TeamScheduleService implements SlackCommandExecutable {
 

@@ -1,8 +1,6 @@
 package com.tmaxos.os1_1_slack_bot.controller;
 
 import com.tmaxos.os1_1_slack_bot.dto.MenuDTO;
-import com.tmaxos.os1_1_slack_bot.repository.AccountEntity;
-import com.tmaxos.os1_1_slack_bot.repository.AccountRepository;
 import com.tmaxos.os1_1_slack_bot.service.BobMenuService;
 import com.tmaxos.os1_1_slack_bot.service.SlackService;
 

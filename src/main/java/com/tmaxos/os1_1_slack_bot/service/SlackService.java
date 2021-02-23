@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -105,7 +106,6 @@ public class SlackService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + oauthToken);
 
-
         // TODO: need a Slack Message Builder
         Map<String, Object> jsonBody = new HashMap<>();
         List<Object> attachments = new ArrayList<>();
@@ -127,7 +127,9 @@ public class SlackService {
         }
 
         HttpEntity<String> entity = new HttpEntity<>(asJsonStr, headers);
-        rest.postForEntity(postMessageUrl, entity, String.class);
+        ResponseEntity<String> res = rest.postForEntity(postMessageUrl, entity, String.class);
+        logger.info("post message response status code : " + res.getStatusCode());
+        logger.info("post message response body : " + res.getBody());
     }
     private void handleSlackMessage(String command, String channelId){
         logger.info("handle slack message");
