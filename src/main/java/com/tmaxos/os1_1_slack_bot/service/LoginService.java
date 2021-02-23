@@ -1,7 +1,5 @@
 package com.tmaxos.os1_1_slack_bot.service;
 
-import java.util.ArrayList;
-
 import com.tmaxos.os1_1_slack_bot.repository.AccountEntity;
 import com.tmaxos.os1_1_slack_bot.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;

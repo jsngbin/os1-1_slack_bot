@@ -1,6 +1,5 @@
 package com.tmaxos.os1_1_slack_bot.controller;
 
-import com.tmaxos.os1_1_slack_bot.service.BobMenuService;
 import com.tmaxos.os1_1_slack_bot.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
