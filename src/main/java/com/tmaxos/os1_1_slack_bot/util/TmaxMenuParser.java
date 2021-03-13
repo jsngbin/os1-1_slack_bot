@@ -70,6 +70,7 @@ public class TmaxMenuParser {
     public void reload(){
         load(true);
     }
+    public String getMenuPath() { return path; };
 
     public List<List<String>> getMenuContents(Menu menu, Day day) {
 

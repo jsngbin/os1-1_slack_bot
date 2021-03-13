@@ -2,8 +2,6 @@
 function loadMenu(lunchDom, dinnerDom){
     var load = function(data, menuName){
 
-        console.log(data["menus"]);
-
         var targetTbody = $("table[name=" + menuName +"]").find("tbody");
         targetTbody.append("<tr class='table-primary' name='title'></tr>");
         $.each(data["menus"], function(i, menu){
@@ -41,6 +39,29 @@ function loadMenu(lunchDom, dinnerDom){
                     alert(xhr + " : " + status);
                 }
             });
+        },
+        error : function(xhr, status){
+            alert(xhr + " : " + status);
+        }
+    });
+}
+
+function uploadMenuFile(){
+    console.log("upload Ready");
+    var form = $('#fileUploadForm')[0];
+    var data = new FormData(form);
+    $.ajax({
+        url : "/api/menu",
+        type : "POST",
+        enctype : "multipart/form-data",
+        data : data,
+        cache : false,
+        timeout : 6000,
+        processData: false,
+        contentType: false,
+        success : function(data){
+            alert(data);
+            window.location.reload();
         },
         error : function(xhr, status){
             alert(xhr + " : " + status);
