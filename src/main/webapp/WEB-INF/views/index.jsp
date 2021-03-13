@@ -11,7 +11,7 @@
 
 		<script src="resources/js/lib/jquery-3.5.1.js"></script>
 		<script src="resources/js/login.js"></script>
-		<script src="resources/js/rest.js"></script>
+		<script src="resources/js/rest.js?ver=20200313"></script>
 
 		<title>${serviceName}</title>
 
@@ -57,7 +57,15 @@
 				</div>
 			</div>
 		</div>
-
+		<div class="container">
+            <form id="fileUploadForm">
+                <div class="form-group">
+                    <label>Tmax 메뉴 엑셀 파일을 업로드 하세요.</label>
+                    <input name="file" type="file" accept=".xlsx" class="form-control"/>
+                    <button type="submit" class="btn btn-primary" onclick="uploadMenuFile(); return false;">업로드</button>
+                </div>
+            </form>
+		</div>
 
 	</body>
 </html>

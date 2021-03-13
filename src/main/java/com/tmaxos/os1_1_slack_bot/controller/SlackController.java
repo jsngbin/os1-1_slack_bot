@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 public class SlackController {
@@ -27,8 +31,28 @@ public class SlackController {
     }
 
     @GetMapping(path="/api/menu")
-    public MenuDTO getMenu(@RequestParam(value = "type", required = false) String lunchOrDinner){
-        return bobMenuService.getTodayMenu(lunchOrDinner);
+    public MenuDTO getMenu(@RequestParam(value = "type", required = false) String lunchOrDinner,
+                           @RequestParam(value = "day", required = false) Integer day){
+        if(day == null)
+            return bobMenuService.getTodayMenu(lunchOrDinner);
+        return bobMenuService.getMenu(lunchOrDinner, day);
+    }
+
+    @PostMapping(path="/api/menu")
+    public String menuUpload(@RequestPart MultipartFile file){
+        logger.info("Menu upload requested");
+        logger.info("file Content Type : " + file.getContentType());
+        logger.info("file name : " + file.getOriginalFilename());
+        logger.info("file size : " + file.getSize() + "byte");
+        File dest = new File("/tmp/" + "menu_latest.xlsx");
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "upload failed";
+        }
+        bobMenuService.updateMenuFile(dest);
+        return "upload success";
     }
 
 }

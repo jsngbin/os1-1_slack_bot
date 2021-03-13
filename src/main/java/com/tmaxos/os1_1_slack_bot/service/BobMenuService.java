@@ -1,5 +1,6 @@
 package com.tmaxos.os1_1_slack_bot.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -63,6 +64,10 @@ public class BobMenuService implements SlackCommandExecutable{
             replyMessage.append("메뉴정보가 없거나 잘못된 입력입니다.");
         }
         return replyMessage.toString();
+    }
+    public void updateMenuFile(File newMenu){
+        newMenu.renameTo(new File(parser.getMenuPath()));
+        parser.reload();
     }
 
     public MenuDTO getMenu(String lunchOrDinner, int day){
