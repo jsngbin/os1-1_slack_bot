@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmaxos.os1_1_slack_bot.template.SlackCommandExecutable;
 
+import com.tmaxos.os1_1_slack_bot.util.SlackCommandCenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,7 @@ public class SlackService {
     private final Logger logger = LoggerFactory.getLogger(SlackService.class);
 
     @Autowired
-    private SlackCommandExecutable bobMenuService;
-
-    @Autowired
-    private SlackCommandExecutable teamScheduleService;
-
+    private SlackCommandCenter commandCenter;
 
     @Value("${slack-oauth-token}")
     private String oauthToken;
@@ -71,31 +68,37 @@ public class SlackService {
             }
 
             if (commandType.equals(EVENTAPI_FIELD_VERIFICATION_VALUE)) {
-                return "{\"challenge\" : \"" + jsonData.get("challenge") + "\"}";
+                return getVerificationReplyMessage((String)jsonData.get("challenge"));
             } else if(commandType.equals(EVENTAPI_FIELD_EVENTCALLBACK_VALUE)) {
-
-                LinkedHashMap<String, String> eventField = (LinkedHashMap<String, String>)jsonData.get(EVENTAPI_FIELD_EVENT);
-                String messageType = eventField.get(EVENTAPI_FIELD_MSGTYPE);
-                String text = eventField.get(EVENTAPI_FIELD_MSG);
-                String channelId = eventField.get(EVENTAPI_FIELD_CHANNELID);
-
-                if(messageType.equals(EVENTAPI_FIELD_APPMENTION_VALUE)){
-                    // post help message
-                    // TODO
-                }
-                else{
-                    // if we need reply for message, handle it!
-                    if(eventField.get(EVENTAPI_FIELD_BOTID) == null)
-                        handleSlackMessage(text, channelId);
-                    }
-                }
+                LinkedHashMap<String, String> eventData = (LinkedHashMap<String, String>)jsonData.get(EVENTAPI_FIELD_EVENT);
+                handleSlackEvent(eventData);
+            }
         }
         catch(JsonProcessingException ex){
             logger.error(ex.getMessage());
         }
 
         return ""; /* nothing to do for slack */
+    }
 
+    private String getVerificationReplyMessage(String challenge){
+        return "{\"challenge\" : \"" + challenge + "\"}";
+    }
+
+    private void handleSlackEvent(Map<String, String> eventData){
+        String messageType = eventData.get(EVENTAPI_FIELD_MSGTYPE);
+        String text = eventData.get(EVENTAPI_FIELD_MSG);
+        String channelId = eventData.get(EVENTAPI_FIELD_CHANNELID);
+
+        if(messageType.equals(EVENTAPI_FIELD_APPMENTION_VALUE)){
+            // post help message
+            // TODO
+        }
+        else{
+            // if we need reply for message, handle it!
+            if(eventData.get(EVENTAPI_FIELD_BOTID) == null)
+                handleSlackMessage(text, channelId);
+        }
     }
 
     private void postMessageToChannel(String title, String text, String channelId){
@@ -133,11 +136,12 @@ public class SlackService {
     }
     private void handleSlackMessage(String command, String channelId){
         logger.info("handle slack message");
-        if(bobMenuService.matchCommand(command)){
+        List<String> titleAndMessage = commandCenter.execute(command);
+        if(titleAndMessage != null)
             postMessageToChannel(
-                bobMenuService.getCommandReplyTitle(command),
-                bobMenuService.getCommandReplyMessage(command),
-                channelId);
-        }
+                    titleAndMessage.get(0),
+                    titleAndMessage.get(1),
+                    channelId
+            );
     }
 }
