@@ -1,12 +1,10 @@
 package com.tmaxos.os1_1_slack_bot.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 public class MenuDTO {
     String lunchOrDinner;
     List<List<String>> Menus;
